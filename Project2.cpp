@@ -18,6 +18,17 @@ enum menuOptions {
 //Global Constants
 const int SIZE = 5;
 
+//Introduction to the Game (Beginning Format)
+void introduction(){
+    cout << setfill('-') << setw(52) << left << "+" << right << "+" << "" << endl;
+    cout << "|         Computer Science and Engineering          |" << endl;
+    cout << "|          CSCE 1030 - Computer Science I           |" << endl;
+    cout << "|     Jose Valdez jov0006 josevaldez6@my.unt.edu    |" << endl;
+    cout << "|    Ronni Wachira rww0095 ronniwachira@my.unt.edu  |" << endl;
+    cout << "|     Tanza Mahmud tsm0181 tanazmahmud@my.unt.edu   |" << endl;
+    cout << setfill('-') << setw(52) << left << "+" << right << "+" << "" << endl; 
+}
+
 //Function for Players Name
 string getName (string usersName) {
     //Allows only whitespaces and alphabets only
@@ -86,7 +97,7 @@ int genHideMatrix(int hiddenNumbers[SIZE][SIZE]) {
 int showMatrix(int displayedMatrix[SIZE][SIZE]){
     genHideMatrix(displayedMatrix);
     cout << displayedMatrix;
-
+    return displayedMatrix[SIZE][SIZE];
 }
 
 //Showcase the Left Number if Prompted
@@ -187,7 +198,7 @@ void guess(int randomArray[SIZE][SIZE], int usersGuess, int numPoints, int leftB
 }
 
 //Sets the starting parameters of the game
-void initialize(int randomNumber1, int randomNumber2, int leftBound, int rightBound, int hiddenMatrix[SIZE][SIZE], int shownMatrix[SIZE][SIZE]){
+void initialize(int randomNumber1, int randomNumber2, int lowerBound, int upperBound, int hiddenMatrix[SIZE][SIZE], int shownMatrix[SIZE][SIZE]){
     //Generate lower bound and upper bound
     srand(time(NULL));
     randomNumber1 = rand () % (250 - 151 + 1) + 151; // the smaller number (lower bound)
@@ -197,8 +208,8 @@ void initialize(int randomNumber1, int randomNumber2, int leftBound, int rightBo
     }
 
      //Two integers with -1 (showcaseing potential left bound and right bound)
-    leftBound = -1;
-    rightBound = -1;
+    lowerBound = -1;
+    upperBound = -1;
 
     //Call function genHideMatrix to generate hidden array
     genHideMatrix(hiddenMatrix);
@@ -207,15 +218,24 @@ void initialize(int randomNumber1, int randomNumber2, int leftBound, int rightBo
     genShowMatrix(shownMatrix);
 }
 
-int main() {
-    //Beginning Format for Introduction and Credit
-    cout << setfill('-') << setw(52) << left << "+" << right << "+" << "" << endl;
-    cout << "|         Computer Science and Engineering          |" << endl;
-    cout << "|          CSCE 1030 - Computer Science I           |" << endl;
-    cout << "|     Jose Valdez jov0006 josevaldez6@my.unt.edu    |" << endl;
-    cout << "|    Ronni Wachira rww0095 ronniwachira@my.unt.edu  |" << endl;
-    cout << "|     Tanza Mahmud tsm0181 tanazmahmud@my.unt.edu   |" << endl;
-    cout << setfill('-') << setw(52) << left << "+" << right << "+" << "" << endl; 
+int main() 
+{
+    //Call Introduction function to Begin format of the Game
+    introduction();
+
+    //Declare Number of Starting Points
+    int numPoints = 100;
+
+    //Declare Lower and Upper Bound (numbers and displayed), create arrays
+    int lowerBound;
+    int upperBound;
+    int randomNumber1;
+    int randomNumber2;
+    int hiddenArray[SIZE][SIZE];
+    int shownArray[SIZE][SIZE];
+
+    //Call Initialize Function to Set Game Parameters
+    initialize(randomNumber1, randomNumber2, lowerBound, upperBound, hiddenArray, shownArray);
 
     //Ask for Players Name & Call getName function & show usersName
     string userName;
@@ -223,6 +243,20 @@ int main() {
     getline(cin, userName);
     string playersName = getName(userName);
     cout << "Welcome to the game " << playersName << endl; 
+
+    //Display Menu & Give User an Option
+    int menuChoice;
+    cout << endl;
+    cout << "Menu: " << endl;
+    cout << "1. Display Left Number" <<endl;
+    cout << "2. Display Right Number" << endl;
+    cout << "3. Guess a number in the range (inclusive)" << endl;
+    cout << "4. Change numbers" << endl;
+    cout << "5. Exit" << endl; 
+    cout << "Your choice: ";
+    cin >> menuChoice;
+
+    //Switch Statement Based Off of Users Choice Above
 
     //Showcase Rows & Columns of Random Numbers
     int randomNumbers[SIZE][SIZE];
