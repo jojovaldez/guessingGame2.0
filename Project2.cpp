@@ -30,7 +30,7 @@ void introduction(){
 }
 
 //Function for Players Name
-string getName (string usersName) {
+string getName(string usersName) {
     //Allows only whitespaces and alphabets only
     for (int i = 0; i < usersName.size(); i++) {
         char c = usersName.at(i);
@@ -67,65 +67,69 @@ string getName (string usersName) {
         usersName.erase(targetJunior, 7);
         usersName.append(", Jr.");
     }
-
     return usersName;
 }
 
 //Showcasing the Array
-int genShowMatrix(int randomNumbers[SIZE][SIZE]) {
+void genShowMatrix(int randomNumbers[SIZE][SIZE]) {
     //Loop to initialize all values within the array to "-1"
     for (int i = 0; i < SIZE; ++i){
         for (int j = 0; j < SIZE; ++j) {
             randomNumbers[i][j] = -1;
         }
     }
-    return randomNumbers[SIZE][SIZE];
 }
 
 //Initialize the Hidden Array
-int genHideMatrix(int hiddenNumbers[SIZE][SIZE]) {
+void genHideMatrix(int hiddenNumbers[SIZE][SIZE]) {
     srand(time(NULL));
     for (int i = 0; i < SIZE; ++i){
         for (int j = 0; j < SIZE; ++j){
             hiddenNumbers[i][j] = rand () % 101 + 100;
         }
     }
-    return hiddenNumbers[SIZE][SIZE];
 }
 
 //Used to display the corressponding 2D array
-int showMatrix(int displayedMatrix[SIZE][SIZE]){
-    genHideMatrix(displayedMatrix);
-    cout << displayedMatrix;
-    return displayedMatrix[SIZE][SIZE];
+void showMatrix(int shownMatrix[SIZE][SIZE]){
+    //Showcase Rows & Columns of Random Numbers
+    int randomNumbers[SIZE][SIZE];
+    genShowMatrix(randomNumbers);
+    //Print Array
+    for(int i = 0; i < SIZE; ++i){
+        for (int j = 0; j < SIZE; ++j){
+        cout << randomNumbers[i][j] << " ";
+        }
+        cout << endl;
+    }
 }
 
 //Showcase the Left Number if Prompted
-int setDisplayLeft(int leftBound, int rightBound, int randomNumber1) {
-     if (leftBound == -1 && rightBound == -1){
+int setDisplayLeft(int &lowerBound, int &upperBound, int randomNumber1) {
+     if (lowerBound == -1 && upperBound == -1){
                     cout << "You will only get 1 point for guessing correctly and lose 10 points " << endl;
                     cout << "for guessing incorrectly, now." << endl;
-                    leftBound = randomNumber1;
-                    cout << leftBound << "      " << rightBound << endl;
+                    lowerBound = randomNumber1;
+                    cout << lowerBound << "      " << upperBound << endl;
                 } else {
                     cout << "You have already displayed the right boundary, you cannot display both." << endl;
-                    cout << leftBound << "      " << rightBound << endl;
+                    cout << lowerBound << "      " << upperBound << endl;
                 }
-    return leftBound;
+    return lowerBound;
 }
 
 //Showcase the Right Number if Prompted
-int setDisplayRight(int leftBound, int rightBound, int randomNumber2){
-    if (leftBound == -1 && rightBound == -1) {
+int setDisplayRight(int &lowerBound, int &upperBound, int randomNumber2){
+    if (lowerBound == -1 && upperBound == -1) {
                     cout << "You will only get 1 point for guessing correctly and lose 10 points " << endl;
                     cout << "for guessing incorrectly, now." << endl;
-                    rightBound = randomNumber2;
-                    cout << leftBound << "      " << rightBound << endl;
+                    upperBound = randomNumber2;
+                    cout << lowerBound << "      " << upperBound << endl;
                 } else {
                     cout << "You have already displayed the left boundary, you cannot display both." << endl;
-                    cout << leftBound << "      " << rightBound << endl;
+                    cout << lowerBound << "      " << upperBound << endl;
                 }
-    return rightBound;
+    return upperBound;
 }
 
 //Eliminate
@@ -157,55 +161,70 @@ return resultOfStatement;
 }
 
 //Allows user to guess the array values
-void guess(int randomArray[SIZE][SIZE], int usersGuess, int numPoints, int leftBound, int rightBound, int randomNumber1, int randomNumber2){
+void guess(int randomArray[SIZE][SIZE], int numPoints, int lowerBound, int upperBound, int randomNumber1, int randomNumber2){
+    int usersGuess;
+    cout << "Enter your guess: ";
+    cin >> usersGuess;
+    
     //No Bound Right Guess
-     if (leftBound == -1 && rightBound == -1){
+     if (lowerBound == -1 && upperBound == -1){
         for(int i = 0; i < SIZE; ++i){
             for(int j = 0; j < SIZE; ++j){
                 if(randomArray[i][j] == usersGuess){
                     eliminate(randomArray, i, j);
                     numPoints += 5;
                     cout << "You guessed correctly. You get 5 points." << endl;
+                    showMatrix(randomArray);
+                    cout << "Your remaining points = " << numPoints << endl;
+                    cout << lowerBound << "      " << upperBound << endl;
                 }
             }
         }
      }
 
     //No Bounds Wrong Guess
-    if (leftBound == -1 && rightBound == -1) {
+    if (lowerBound == -1 && upperBound == -1) {
         numPoints -= 5;
        cout << "You gussed incorrectly. You lost 5 points" << endl;
+       showMatrix(randomArray);
+       cout << "Your remaining points = " << numPoints << endl;
+       cout << lowerBound << "      " << upperBound << endl;
     }
 
     //Bound Displayed Right Guess
-    if (leftBound != -1 || rightBound != -1) {
+    if (lowerBound != -1 || upperBound != -1) {
         for(int i = 0; i < SIZE; ++i){
             for(int j = 0; j < SIZE; ++j){
                 if(randomArray[i][j] == usersGuess){
                     eliminate(randomArray, i, j);
                     numPoints += 1;
                     cout << "You guessed correctly. You get 1 point." << endl;
+                    cout << "You guessed correctly. You get 5 points." << endl;
+                    showMatrix(randomArray);
+                    cout << "Your remaining points = " << numPoints << endl;
+                    cout << lowerBound << "      " << upperBound << endl;
                 }
             }
         }
     }
 
     //Bound Displayed Wrong Guess
-    if (leftBound != -1 || rightBound != -1) {
+    if (lowerBound != -1 || upperBound != -1) {
        numPoints -= 10;
        cout << "You guessed incorrectly. You lost 10 points" << endl;
-    }
+        cout << "You guessed correctly. You get 5 points." << endl;
+        showMatrix(randomArray);
+        cout << "Your remaining points = " << numPoints << endl;
+        cout << lowerBound << "      " << upperBound << endl;
+}
 }
 
 //Sets the starting parameters of the game
-void initialize(int randomNumber1, int randomNumber2, int lowerBound, int upperBound, int hiddenMatrix[SIZE][SIZE], int shownMatrix[SIZE][SIZE]){
+void initialize(int &randomNumber1, int &randomNumber2, int &lowerBound, int &upperBound, int hiddenMatrix[SIZE][SIZE], int shownMatrix[SIZE][SIZE]){
     //Generate lower bound and upper bound
     srand(time(NULL));
-    randomNumber1 = rand () % (250 - 151 + 1) + 151; // the smaller number (lower bound)
-    randomNumber2 = rand () % (250 - 151 + 1) + 151; // the larger number
-     while (randomNumber1 > randomNumber2) {
-        randomNumber2 = rand () % 101 + 100; //Generate lower bound
-    }
+    randomNumber1 = rand () % (249 - 150 + 1) + 150; // the smaller number (lower bound)
+    randomNumber2 = rand () % (349 - 250 + 1) + 250; // the larger number
 
      //Two integers with -1 (showcaseing potential left bound and right bound)
     lowerBound = -1;
@@ -231,11 +250,11 @@ int main()
     int upperBound;
     int randomNumber1;
     int randomNumber2;
-    int hiddenArray[SIZE][SIZE];
-    int shownArray[SIZE][SIZE];
+    int hiddenMatrix[SIZE][SIZE];
+    int shownMatrix[SIZE][SIZE];
 
     //Call Initialize Function to Set Game Parameters
-    initialize(randomNumber1, randomNumber2, lowerBound, upperBound, hiddenArray, shownArray);
+    initialize(randomNumber1, randomNumber2, lowerBound, upperBound, hiddenMatrix, shownMatrix);
 
     //Ask for Players Name & Call getName function & show usersName
     string userName;
@@ -243,34 +262,66 @@ int main()
     getline(cin, userName);
     string playersName = getName(userName);
     cout << "Welcome to the game " << playersName << endl; 
+    cout << lowerBound << "      " << upperBound << endl;
 
     //Display Menu & Give User an Option
-    int menuChoice;
-    cout << endl;
-    cout << "Menu: " << endl;
-    cout << "1. Display Left Number" <<endl;
-    cout << "2. Display Right Number" << endl;
-    cout << "3. Guess a number in the range (inclusive)" << endl;
-    cout << "4. Change numbers" << endl;
-    cout << "5. Exit" << endl; 
-    cout << "Your choice: ";
-    cin >> menuChoice;
-
-    //Switch Statement Based Off of Users Choice Above
-
-    //Showcase Rows & Columns of Random Numbers
-    int randomNumbers[SIZE][SIZE];
-    genShowMatrix(randomNumbers);
-    //Print Array
-    for(int i = 0; i < SIZE; ++i){
-        for (int j = 0; j < SIZE; ++j){
-        cout << randomNumbers[i][j] << " ";
-        }
+    while(allZeros(shownMatrix) != true){
+        int menuChoice;
         cout << endl;
+        cout << "Menu: " << endl;
+        cout << "1. Display Left Number" <<endl;
+        cout << "2. Display Right Number" << endl;
+        cout << "3. Guess a number in between" << endl;
+        cout << "4. Change numbers" << endl;
+        cout << "5. Exit" << endl; 
+        cout << "What do you want to do? ";
+        cin >> menuChoice;
+
+        //Switch Statement Based Off of Users Choice Above
+        switch(menuChoice){
+            case DisplayLeft:
+                setDisplayLeft(lowerBound, upperBound, randomNumber1);
+                break;
+            
+            case DisplayRight:
+                setDisplayRight(lowerBound, upperBound, randomNumber2);
+                break;
+
+            case Guess:
+                showMatrix(shownMatrix);
+                guess(hiddenMatrix, numPoints, lowerBound, upperBound, randomNumber1, randomNumber2);
+                //Check to see if the user has won
+                char continueGame;
+                if(allZeros(shownMatrix) == true) {
+                    cout << "You Won!!!" << endl;
+                    cout << "Do you want to play another game? Y/N: " << endl;
+                    cin >> continueGame;
+                    if(continueGame == 'Y'){
+                        initialize(randomNumber1, randomNumber2, lowerBound, upperBound, hiddenMatrix, shownMatrix);
+                    } else {
+                        cout << "Bye " << playersName << endl;
+                        cout << "Your final points balance = " << numPoints << endl;
+                    }
+                }
+                break;
+
+            case Change:
+                numPoints -= 1;
+                cout << "You lose 1 point for changing the boundaries." << endl;
+                cout << "Your remaining points = " << numPoints << endl;
+                initialize(randomNumber1, randomNumber2, lowerBound, upperBound, hiddenMatrix, shownMatrix);
+                break;
+
+            case Exit:
+                cout << "Bye " << playersName << " !!!" << endl;
+                    cout << "Your final points balance = " << numPoints;
+                break;
+
+            default:
+                cout << "Wrong choice. Enter again." << endl;
+                cout << lowerBound << "      " << upperBound << endl;
+                break;
+        }
     }
-
-
-
-
-    return 0; 
+return 0; 
 }
